@@ -1,0 +1,55 @@
+# VozClave config. Run `vozclave check` after editing it.
+
+# Speech model: a folder name inside the VozClave models folder, or a full path.
+# `vozclave download-model es` downloads this one.
+model = "vosk-model-small-es-0.42"
+
+# Seconds before the same command can fire again.
+cooldown_seconds = 3
+
+# Microphone to use (number or name from `vozclave devices`). Leave it out for the default one.
+# input_device = 1
+
+[voice]
+# Only run commands when the voice matches your voiceprint (`vozclave enroll`).
+enabled = true
+# 0..1 — how similar the voice must be to yours. Raise it if other people trigger commands,
+# lower it if it rejects you. `vozclave run` logs the score of every attempt.
+threshold = 0.40
+
+[sound]
+# Played when a command runs: "default", a path to a .wav/.mp3/.flac file, or "" for silence.
+file = "default"
+volume = 0.3
+
+# Each command: one or more phrases, an action and a target.
+#   open  -> file, folder, URL or app (on Windows also URIs like "spotify:" or
+#            "shell:AppsFolder\<AppID>" for Microsoft Store apps)
+#   close -> process name to close, e.g. "Spotify" or "notepad.exe"
+#   run   -> a command line (no shell)
+# Short phrases in the model's language work best. Every word must exist in the
+# model's vocabulary — `vozclave check` tells you which ones don't.
+
+[[commands]]
+name = "browser"
+phrases = ["abre el navegador", "okey navegador"]
+action = "open"
+target = "https://www.google.com"
+
+[[commands]]
+name = "music"
+phrases = ["pon música", "abre spotify"]
+action = "open"
+target = "spotify:"
+
+[[commands]]
+name = "close music"
+phrases = ["cierra spotify", "quita la música"]
+action = "close"
+target = "Spotify"
+
+[[commands]]
+name = "notes"
+phrases = ["abre las notas"]
+action = "run"
+target = "notepad"
