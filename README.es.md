@@ -84,12 +84,22 @@ Un `vozclave.toml` en la carpeta actual tiene prioridad.
 | `vozclave check` | Valida configuración, frases y archivos |
 | `vozclave devices` | Lista los micrófonos (usa el número en `input_device`) |
 | `vozclave enroll [-n 8]` | Graba tu voz y crea tu huella |
-| `vozclave run [-v]` | Empieza a escuchar |
+| `vozclave run [-v] [--log-file ARCHIVO]` | Empieza a escuchar (y opcionalmente guarda el registro) |
 
 ### Ajustar el umbral
 
 `vozclave run` registra el puntaje de similitud de cada intento. Di tus frases varias veces,
 pídele a otra persona que lo intente y pon el umbral entre ambos grupos de puntajes.
+
+Ejemplo de una prueba real (misma frase, mismo micrófono, 8 grabaciones de registro):
+
+| Quién habla | Puntajes | Resultado con `threshold = 0.60` |
+| --- | --- | --- |
+| Dueño | 0.63, 0.69, 0.74 | aceptado |
+| Otra persona | 0.50, 0.51, 0.57 | rechazado |
+
+La diferencia entre personas es menor de lo que uno esperaría porque las frases son cortas
+(alrededor de un segundo de audio), así que mide con tus propias voces antes de fiarte de un valor.
 
 ## Privacidad
 

@@ -106,12 +106,22 @@ target = "Spotify"
 | `vozclave check` | Validate config, phrases and files |
 | `vozclave devices` | List microphones (use the number in `input_device`) |
 | `vozclave enroll [-n 8]` | Record your voice and build your voiceprint |
-| `vozclave run [-v]` | Start listening |
+| `vozclave run [-v] [--log-file FILE]` | Start listening (optionally also logging to a file) |
 
 ### Tuning the threshold
 
 `vozclave run` logs the similarity score of every attempt. Say your phrases a few times,
 ask someone else to try, and put the threshold between both groups of scores.
+
+Example from a real test (same phrase, same microphone, 8 enrollment samples):
+
+| Speaker | Scores | Result with `threshold = 0.60` |
+| --- | --- | --- |
+| Owner | 0.63, 0.69, 0.74 | accepted |
+| Another person | 0.50, 0.51, 0.57 | rejected |
+
+The gap between people is narrower than you might expect because the phrases are short
+(about one second of audio), so measure with your own voices before trusting a value.
 
 ## Privacy
 
