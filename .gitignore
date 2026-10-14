@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Personal data: never commit voiceprints, recordings, local configs or logs
+*.npy
+*.log
+recordings/
+vozclave.toml
+models/
+.env
+.env.*
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local assistant settings
+.claude/
+CLAUDE.md
