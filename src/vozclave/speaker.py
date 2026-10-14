@@ -8,7 +8,6 @@ The voiceprint is just the average embedding of the enrollment samples.
 
 from __future__ import annotations
 
-import logging
 from collections.abc import Callable, Sequence
 from pathlib import Path
 
@@ -39,11 +38,6 @@ def ecapa_embedder(cache_dir: Path) -> Embedder:
         raise RuntimeError(
             'voice verification needs extra packages: pip install "vozclave[voiceid]"'
         ) from e
-
-    # SpeechBrain sets its loggers to INFO on import; keep the console readable
-    for name in list(logging.root.manager.loggerDict):
-        if name.startswith("speechbrain"):
-            logging.getLogger(name).setLevel(logging.WARNING)
 
     model = EncoderClassifier.from_hparams(
         source=MODEL_SOURCE,

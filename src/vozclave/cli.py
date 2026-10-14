@@ -187,19 +187,38 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("-n", "--samples", type=int, default=8, help="how many samples (default: 8)")
     p.set_defaults(func=cmd_enroll)
 
-    sub.add_parser("run", help="start listening for commands").set_defaults(func=cmd_run)
+    p = sub.add_parser("run", help="start listening for commands")
+    p.add_argument("--log-file", help="also append the log to this file")
+    p.set_defaults(func=cmd_run)
     return parser
+
+
+NOISY_LOGGERS = ("speechbrain", "urllib3", "huggingface_hub", "filelock")
+
+
+def _quiet_third_party(record: logging.LogRecord) -> bool:
+    # A handler filter instead of setLevel: SpeechBrain resets its loggers' levels on import
+    return record.levelno >= logging.WARNING or not record.name.startswith(NOISY_LOGGERS)
+
+
+def setup_logging(verbose: bool, log_file: str | None = None) -> None:
+    handlers: list[logging.Handler] = [logging.StreamHandler()]
+    if log_file:
+        handlers.append(logging.FileHandler(log_file, encoding="utf-8"))
+    for handler in handlers:
+        handler.addFilter(_quiet_third_party)
+    logging.basicConfig(
+        level=logging.DEBUG if verbose else logging.INFO,
+        format="%(asctime)s  %(message)s",
+        datefmt="%H:%M:%S",
+        handlers=handlers,
+        force=True,
+    )
 
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    logging.basicConfig(
-        level=logging.DEBUG if args.verbose else logging.INFO,
-        format="%(asctime)s  %(message)s",
-        datefmt="%H:%M:%S",
-    )
-    for noisy in ("urllib3", "huggingface_hub", "filelock"):
-        logging.getLogger(noisy).setLevel(logging.WARNING)
+    setup_logging(args.verbose, getattr(args, "log_file", None))
     try:
         return args.func(args)
     except (ConfigError, FileNotFoundError, RuntimeError, ValueError) as e:
